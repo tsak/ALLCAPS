@@ -36,7 +36,7 @@ Loop:
 
 				matched := evilLowerCase.MatchString(ev.Text)
 
-				if ev.User != info.User.ID && matched {
+				if ev.Msg.User != info.User.ID && ev.SubType == "" && matched {
 					rtm.SendMessage(rtm.NewOutgoingMessage(fmt.Sprintf("*ALL CAPS PLEASE!* %s", strings.ToUpper(ev.Text)), ev.Channel))
 				}
 
