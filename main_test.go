@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestContainsLowercase(t *testing.T) {
 	//Debug(true)
@@ -80,6 +83,31 @@ func TestContainsLowercase(t *testing.T) {
 				} else {
 					t.Errorf("'%s' WAS NOT DETECTED AS UPPERCASE", tt.input)
 				}
+			}
+		})
+	}
+}
+
+func TestEnforcement(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   string
+		endWith string
+	}{
+		{name: "nil", input: "", endWith: "NOTHING TO SEE HERE, MOVE ALONG CAPS"},
+		{name: "quoted", input: "> foo", endWith: "> FOO"},
+		{name: "normal", input: "bar", endWith: "> BAR"},
+		{name: "normal", input: "baz", endWith: "> BAZ"},
+		{name: "normal", input: "foo", endWith: "> FOO"},
+		{name: "normal", input: "bar", endWith: "> BAR"},
+		{name: "normal", input: "baz", endWith: "> BAZ"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Enforcement(tt.input)
+			if !strings.HasSuffix(got, tt.endWith) {
+				t.Errorf("Expected '%s' to end with '%s'", got, tt.endWith)
 			}
 		})
 	}
