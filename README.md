@@ -25,3 +25,7 @@ go get github.com/nlopes/slack@d06c2a2b3249b44a9c5dee8485f5a87497beb9ea
 ```bash
 SLACKTOKEN=YOURTOKENHERE go run main.go
 ```
+
+## IN ACTION
+
+![ALLCAPS IN ACTION](action-shot.png)
