@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var debug = false
+var debug = true
 
 func getenv(name string) string {
 	v := os.Getenv(name)
@@ -104,7 +104,7 @@ func ContainsLowercase(m string) bool {
 				mention = -1
 				break
 			}
-			if emoji != -1 && next != ":" {
+			if emoji != -1 && next != ":" && before != ":" {
 				emoji = -1
 				break
 			}

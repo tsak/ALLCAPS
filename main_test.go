@@ -69,6 +69,10 @@ func TestContainsLowercase(t *testing.T) {
 		{name: ":emoji@mention", input: ":emoji@mention", expected: true},
 		{name: "@mention:moji", input: "@mention:moji", expected: true},
 		{name: "@mention:moji:", input: "@mention:moji:", expected: true},
+		// Skin tone
+		{name: ":skin::tone:", input: ":+1::skin-tone-6:", expected: false},
+		{name: ":skin::tone: with text", input: ":+1::skin-tone-6: with lowercase", expected: true},
+		{name: ":skin::tone: WITH TEXT", input: ":+1::skin-tone-6: WITH UPPERCASE", expected: false},
 		// Unicode
 		{name: "sᴍᴀʟʟ ᴄᴀᴘs", input: "sᴍᴀʟʟ ᴄᴀᴘs", expected: true},
 	}
