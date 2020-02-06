@@ -64,7 +64,7 @@ func TestContainsLowercase(t *testing.T) {
 		{name: ":emoji: no space", input: "FOO:emoji:", expected: true},
 		{name: ":emoji: no space", input: "FOO:EMOJI:", expected: false},
 		// Mix
-		{name: "#channelmoji:", input: "#channelmoji:", expected: true},
+		{name: "#channelmoji:", input: "contains a #channelmoji: in the text", expected: true},
 		{name: ":emoji#chan", input: ":emoji#chan", expected: true},
 		{name: ":emoji@mention", input: ":emoji@mention", expected: true},
 		{name: "@mention:moji", input: "@mention:moji", expected: true},

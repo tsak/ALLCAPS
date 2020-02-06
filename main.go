@@ -35,10 +35,10 @@ func ContainsLowercase(m string) bool {
 	next := ""
 
 	// State
-	channel := false
-	mention := false
-	url := false
-	emoji := false
+	channel := -1
+	mention := -1
+	url := -1
+	emoji := -1
 
 	for i, char := range chars {
 		if i < l-1 {
@@ -47,65 +47,89 @@ func ContainsLowercase(m string) bool {
 		switch char {
 		// #channel
 		case "#":
-			if url {
+			if url != -1 {
+				break
+			}
+			if emoji != -1 {
+				// Reset emoji mode and append characters since emoji begin was encountered
+				out += m[emoji:i]
+				emoji = -1
 				break
 			}
 			if before == "" || before == " " {
-				channel = true
+				channel = i
 			} else {
 				out += "#"
 			}
 		// @mention
 		case "@":
-			if url {
+			if url != -1 {
+				break
+			}
+			if emoji != -1 {
+				// Reset emoji mode and append characters since emoji begin was encountered
+				out += m[emoji:i]
+				emoji = -1
 				break
 			}
 			if before == "" || before == " " {
-				mention = true
+				mention = i
 			} else {
 				out += "@"
 			}
 		// URL
 		case "h":
-			if channel || mention || url || emoji {
+			if channel != -1 || mention != -1 || url != -1 || emoji != -1 {
 				break
 			}
 			if (before == "" || before == " ") && (l-i > 7 && strings.Join(chars[i:i+7], "") == "http://" || l-i > 8 && strings.Join(chars[i:i+8], "") == "https://") {
-				url = true
+				url = i
 			} else {
 				out += "h"
 			}
 		// :emoji:
 		case ":":
-			if url {
+			if url != -1 {
 				break
 			}
-			if emoji && next != ":" {
-				emoji = false
+			if channel != -1 {
+				// Reset channel mode and append characters since channel begin was encountered
+				out += m[channel:i]
+				channel = -1
+				break
+			}
+			if mention != -1 {
+				// Reset mention mode and append characters since mention begin was encountered
+				out += m[mention:i]
+				mention = -1
+				break
+			}
+			if emoji != -1 && next != ":" {
+				emoji = -1
 				break
 			}
 			if before == "" || before == " " {
-				emoji = true
+				emoji = i
 			} else {
 				out += ":"
 			}
 		// Terminate when seeing a space
 		case " ":
-			if channel || mention || url || emoji {
-				channel = false
-				mention = false
-				url = false
-				emoji = false
+			if channel != -1 || mention != -1 || url != -1 || emoji != -1 {
+				channel = -1
+				mention = -1
+				url = -1
+				emoji = -1
 			}
 			out += " "
 		default:
-			if !(channel || mention || url || emoji) {
+			if !(channel != -1 || mention != -1 || url != -1 || emoji != -1) {
 				out += char
 			}
 		}
 
 		if debug {
-			fmt.Printf("'%s' '%s' '%s' (%t %t %t %t) %d %d %d\n", char, before, out, channel, mention, url, emoji, i, l, l-i)
+			fmt.Printf("'%s' '%s' '%s' (%d %d %d %d) %d %d %d\n", char, before, out, channel, mention, url, emoji, i, l, l-i)
 		}
 
 		before = char
