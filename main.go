@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var debug = true
+var debug = false
 
 func getenv(name string) string {
 	v := os.Getenv(name)
@@ -161,7 +161,13 @@ func Enforcement(m string) string {
 	if strings.HasPrefix(m, "> ") {
 		m = m[2:]
 	}
-	return fmt.Sprintf(responses[rand.Intn(rl)], strings.ToUpper(m))
+
+	up := strings.ToUpper(m)
+
+	// Replace skin-tone modifier with lowercase
+	up = strings.Replace(up, ":SKIN-TONE-", ":skin-tone-", -1)
+
+	return fmt.Sprintf(responses[rand.Intn(rl)], up)
 }
 
 func main() {
