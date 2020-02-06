@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/nlopes/slack"
+	"html"
 	"math/rand"
 	"os"
 	"strings"
@@ -156,8 +157,9 @@ Loop:
 			case *slack.MessageEvent:
 				info := rtm.GetInfo()
 
-				if ev.Msg.User != info.User.ID && ev.SubType == "" && ContainsLowercase(ev.Text) {
-					rtm.SendMessage(rtm.NewOutgoingMessage(Enforcement(ev.Text), ev.Channel))
+				text := html.UnescapeString(ev.Text)
+				if ev.Msg.User != info.User.ID && ev.SubType == "" && ContainsLowercase(text) {
+					rtm.SendMessage(rtm.NewOutgoingMessage(Enforcement(text), ev.Channel))
 				}
 
 			case *slack.RTMError:
