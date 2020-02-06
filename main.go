@@ -143,19 +143,38 @@ func ContainsLowercase(m string) bool {
 
 var (
 	responses = []string{
-		":male-police-officer: ALLCAPS POLICE :male-police-officer: IS YOUR CAPS LOCK BROKEN?\n\n> %s",
-		":female-police-officer: ALLCAPS POLICE :female-police-officer: CAPS AND REGISTRATION PLEASE!\n\n> %s",
-		":male-police-officer: ALLCAPS POLICE :female-police-officer: PLEASE KEEP YOUR CAPS ON THE LOCK!\n\n> %s",
-		":female-police-officer: ALLCAPS POLICE :male-police-officer: HAVE YOU SEEN THESE CAPS BEFORE?\n\n> %s",
+		"%s ACPD %s IS YOUR CAPS LOCK BROKEN? %s\n\n> %s",
+		"%s ACPD %s CAPS AND REGISTRATION PLEASE! %s\n\n> %s",
+		"%s ACPD %s PLEASE KEEP YOUR CAPS ON THE LOCK! %s\n\n> %s",
+		"%s ACPD %s HAVE YOU SEEN THESE CAPS BEFORE? %s\n\n> %s",
 	}
 	rl = len(responses)
+
+	officers = []string{"male-police-officer", "female-police-officer"}
+	ol       = len(officers)
+
+	skinTones = []string{"skin-tone-2", "skin-tone-3", "skin-tone-4", "skin-tone-5", "skin-tone-6"}
+	sl        = len(skinTones)
+
+	props = []string{"doughnut", "coffee", "police_car", "oncoming_police_car", "rotating_light"}
+	pl    = len(props)
 )
 
-// Enforcement wraps a given message into a helpful ALLCAPS POLICE response
+// OfficerMoji returns a random officer from the ACPD
+func OfficerMoji() string {
+	return fmt.Sprintf(":%s::%s:", officers[rand.Intn(ol)], skinTones[rand.Intn(sl)])
+}
+
+// Prop returns an ACPD officer's tool of the trade
+func Prop() string {
+	return fmt.Sprintf(":%s:", props[rand.Intn(pl)])
+}
+
+// Enforcement wraps a given message into a helpful ACPD response
 func Enforcement(m string) string {
 	// Ignore empty string
 	if m == "" {
-		return ":male-police-officer: ALLCAPS POLICE :female-police-officer: NOTHING TO SEE HERE, MOVE ALONG CAPS"
+		return fmt.Sprintf("%s ACPD %s NOTHING TO SEE HERE, MOVE ALONG CAPS %s", OfficerMoji(), OfficerMoji(), Prop())
 	}
 	// Avoid double quoting
 	if strings.HasPrefix(m, "> ") {
@@ -167,7 +186,7 @@ func Enforcement(m string) string {
 	// Replace skin-tone modifier with lowercase
 	up = strings.Replace(up, ":SKIN-TONE-", ":skin-tone-", -1)
 
-	return fmt.Sprintf(responses[rand.Intn(rl)], up)
+	return fmt.Sprintf(responses[rand.Intn(rl)], OfficerMoji(), OfficerMoji(), Prop(), up)
 }
 
 func main() {

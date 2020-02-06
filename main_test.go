@@ -96,9 +96,10 @@ func TestEnforcement(t *testing.T) {
 	tests := []struct {
 		name    string
 		input   string
+		contain string
 		endWith string
 	}{
-		{name: "nil", input: "", endWith: "NOTHING TO SEE HERE, MOVE ALONG CAPS"},
+		{name: "nil", input: "", contain: "NOTHING TO SEE HERE, MOVE ALONG CAPS"},
 		{name: "quoted", input: "> foo", endWith: "> FOO"},
 		{name: "normal", input: "bar", endWith: "> BAR"},
 		{name: "normal", input: "baz", endWith: "> BAZ"},
@@ -110,7 +111,10 @@ func TestEnforcement(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Enforcement(tt.input)
-			if !strings.HasSuffix(got, tt.endWith) {
+			if tt.endWith == "" && !strings.Contains(got, tt.endWith) {
+				t.Errorf("Expected '%s' to contain '%s'", got, tt.endWith)
+			}
+			if tt.contain == "" && !strings.HasSuffix(got, tt.endWith) {
 				t.Errorf("Expected '%s' to end with '%s'", got, tt.endWith)
 			}
 		})
